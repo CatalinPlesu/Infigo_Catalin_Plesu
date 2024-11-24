@@ -13,8 +13,8 @@ public class CommentRepository:Repository<CommentEntity>,ICommentRepository
     
     public async Task<List<CommentEntity>> GetCommentsByTopicSystemName(int topicId)
     {
-        var comments = await _dbSet.Where(c => c.TopicId == topicId)
-            .ToListAsync();
+        var comments = await _dbSet.Where(c => c.TopicId == topicId).OrderByDescending(c => c.CreatedOnUtc).ToListAsync();
+            
         return comments;
     }
 }

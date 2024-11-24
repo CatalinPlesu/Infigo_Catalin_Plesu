@@ -108,11 +108,17 @@ public class TopicController : Controller
         {
             throw new ArgumentException($"Item with system name: {systemName} wasn't found!");
         }
+        
         var topicDto = _mapper.Map<TopicEntity, TopicDetailsModel>(topic);
         topicDto.CreateComment = new CommentCreateModel 
         {
             TopicId = topic.Id,
         };
+        
+        var comments = await _commentService.GetAll(topic.Id);
+        var commentDetails = _mapper.Map<IEnumerable<CommentEntity>, List<CommentDetailsModel>>(comments);
+        topicDto.Comments  = commentDetails;        
+
         return View(topicDto);
     }
 }
