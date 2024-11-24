@@ -19,6 +19,7 @@
 <h3 class="mt-5">Add a Comment</h3>
 @using (Html.BeginForm("Create", "Comment", FormMethod.Post))
 {
+    @Html.ValidationSummary()
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.CreateComment.TopicId, new { Value = Model.Id })
     @Html.HiddenFor(model => model.SystemName, new { Value = Model.SystemName })

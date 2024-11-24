@@ -13,11 +13,13 @@ public class CommentController : Controller
 {
     private readonly ICommentService _commentService;
     private readonly IMapper _mapper;
+    private readonly IValidator<TopicDetailsModel> _createModelValidator;
 
-    public CommentController(ICommentService commentService, IMapper mapper)
+    public CommentController(ICommentService commentService, IMapper mapper, IValidator<TopicDetailsModel> crateModelValidator)
     {
         _commentService = commentService;
         _mapper = mapper;
+        _createModelValidator = crateModelValidator;
     }
     
     // [HttpPost]
@@ -45,10 +47,25 @@ public class CommentController : Controller
     // }
     
     [HttpPost]
-    public async Task<IActionResult> Create(TopicDetailsModel topic)
+public async Task<IActionResult> Create(TopicDetailsModel topic)
+{
+    var validationResult = await _createModelValidator.ValidateAsync(topic);
+
+    if (!validationResult.IsValid)
     {
-        var commentEntity = _mapper.Map<CommentCreateModel, CommentEntity>(topic.CreateComment);
-        await _commentService.Create(commentEntity);
+        // Save only the error messages
+        TempData["Errors"] = string.Join(";", validationResult.Errors.Select(e => e.ErrorMessage));
+    
+        // Optionally, save input fields as JSON if needed
+        TempData["Input"] = System.Text.Json.JsonSerializer.Serialize(topic.CreateComment);
+
         return RedirectToAction("Details", "Topic", new { systemName = topic.SystemName });
     }
+
+    var commentEntity = _mapper.Map<CommentCreateModel, CommentEntity>(topic.CreateComment);
+    await _commentService.Create(commentEntity);
+
+    return RedirectToAction("Details", "Topic", new { systemName = topic.SystemName });
+}
+
 }

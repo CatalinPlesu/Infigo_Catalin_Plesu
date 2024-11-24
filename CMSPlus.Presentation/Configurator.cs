@@ -13,6 +13,7 @@ public static class Configurator
     {
         services.AddRazorPages().AddRazorRuntimeCompilation();
         services.AddScoped<TopicValidatorHelpers>();
+        services.AddScoped<IValidator<TopicDetailsModel>, CommentCreateModelValidator>();
         services.AddScoped<IValidator<TopicCreateModel>, TopicCreateModelValidator>();
         services.AddScoped<IValidator<TopicEditModel>, TopicEditModelValidator>();
         services.AddControllersWithViews();

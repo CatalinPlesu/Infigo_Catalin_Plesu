@@ -119,6 +119,27 @@ public class TopicController : Controller
         var commentDetails = _mapper.Map<IEnumerable<CommentEntity>, List<CommentDetailsModel>>(comments);
         topicDto.Comments  = commentDetails;        
 
+
+        if (TempData.ContainsKey("Errors"))
+        {
+            // Split the error messages back into individual strings
+            var errorMessages = TempData["Errors"]?.ToString()?.Split(';') ?? Array.Empty<string>();
+
+            // Add the errors back to ModelState
+            foreach (var error in errorMessages)
+            {
+                ModelState.AddModelError("", error); // Add to a general error group
+            }
+
+            // Restore input fields
+            if (TempData.ContainsKey("Input"))
+            {
+                topicDto.CreateComment = System.Text.Json.JsonSerializer.Deserialize<CommentCreateModel>(
+                    TempData["Input"].ToString()
+                );
+            }
+        }
+        
         return View(topicDto);
     }
 }
