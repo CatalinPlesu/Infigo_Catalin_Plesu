@@ -15,6 +15,7 @@ public class ApplicationDbContext : IdentityDbContext
     {
     }
     public DbSet<TopicEntity> TopicEntities { get; set; }
+    public DbSet<CommentEntity> CommentEntities { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
@@ -23,6 +24,7 @@ public class ApplicationDbContext : IdentityDbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfiguration(new TopicEntityConfiguration());
+        builder.ApplyConfiguration(new CommentEntityConfiguration());
         base.OnModelCreating(builder);
     }
 }
