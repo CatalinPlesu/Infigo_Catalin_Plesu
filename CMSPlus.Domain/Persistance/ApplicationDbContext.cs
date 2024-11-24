@@ -14,7 +14,7 @@ public class ApplicationDbContext : IdentityDbContext
         : base(options)
     {
     }
-
+    public DbSet<TopicEntity> TopicEntities { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
