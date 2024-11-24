@@ -1,5 +1,6 @@
 using AutoMapper;
 using CMSPlus.Domain.Entities;
+using CMSPlus.Domain.Models.CommentModels;
 using CMSPlus.Services.Interfaces;
 using CMSPlus.Domain.Models.TopicModels;
 using FluentValidation;
@@ -11,13 +12,15 @@ namespace CMSPlus.Presentation.Controllers;
 public class TopicController : Controller
 {
     private readonly ITopicService _topicService;
+    private readonly ICommentService _commentService;
     private readonly IMapper _mapper;
     private readonly IValidator<TopicEditModel> _editModelValidator;
     private readonly IValidator<TopicCreateModel> _createModelValidator;
 
-    public TopicController(ITopicService topicService,IMapper mapper, IValidator<TopicEditModel> editModelValidator, IValidator<TopicCreateModel> createModelValidator)
+    public TopicController(ITopicService topicService, ICommentService commentService, IMapper mapper, IValidator<TopicEditModel> editModelValidator, IValidator<TopicCreateModel> createModelValidator)
     {
         _topicService = topicService;
+        _commentService = commentService;
         _mapper = mapper;
         _editModelValidator = editModelValidator;
         _createModelValidator = createModelValidator;
@@ -106,6 +109,10 @@ public class TopicController : Controller
             throw new ArgumentException($"Item with system name: {systemName} wasn't found!");
         }
         var topicDto = _mapper.Map<TopicEntity, TopicDetailsModel>(topic);
+        topicDto.CreateComment = new CommentCreateModel 
+        {
+            TopicId = topic.Id,
+        };
         return View(topicDto);
     }
 }
